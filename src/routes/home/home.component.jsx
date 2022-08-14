@@ -3,7 +3,7 @@ import {Outlet} from 'react-router-dom';
 import '../../categories.styles.scss';
 import Directory from '../../components/directory/directory.component';
 
-const  Home= ()=> {
+const  Home=()=> {
   const categories=[
     {
       "id": 1,
@@ -34,7 +34,8 @@ const  Home= ()=> {
 
   return (
     <div>
-      <Outlet/> 
+     
+       <Outlet/>
        <Directory categories={categories}/>
        
     </div>

@@ -1,6 +1,14 @@
 import {initializeApp} from 'firebase/app';
-import {getAuth,signInWithRedirect,signInWithPopup,GoogleAuthProvider} from 'firebase/auth';
+import {
+  getAuth,
+  signInWithRedirect,
+  signInWithPopup,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword
+} from 'firebase/auth';
+
 import {getFirestore,doc,getDoc,setDoc} from 'firebase/firestore'
+
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -23,10 +31,16 @@ provider.setCustomParameters({
 export const auth= getAuth();
 export const signInwithGooglePopup= () => signInWithPopup(auth,provider);
 export const db = getFirestore();
-export const createUserDocumentFromAuth = async (userAuth) =>{
+
+export const createUserDocumentFromAuth = async (
+  userAuth,
+  additionalInformation={}) =>{
+    if(!userAuth) return;
     const userDocRef = doc(db,'users',userAuth.uid);
+
     console.log(userDocRef);
     const userSnapShot= await getDoc(userDocRef);
+
     console.log(userSnapShot);
     console.log(userSnapShot.exists());
 
@@ -37,12 +51,18 @@ export const createUserDocumentFromAuth = async (userAuth) =>{
         await setDoc(userDocRef, {
            displayName,
            email,
-           createdAt
+           createdAt,
+           ...additionalInformation 
         });
       }catch(error){
           console.log('Error creating the user',error.message);
       }
-      }
+    }
       return userDocRef;
-   }
+   
+    }
+    export const createAuthUserWithEmailandPassword= async (email,password) =>{
+           if(!email || !password) return;
 
+           return createUserWithEmailAndPassword(auth,email,password);
+    }
